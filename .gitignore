@@ -1,0 +1,30 @@
+# Ambiente virtuale Conda
+env/
+venv/
+.conda/
+*.env
+.venv/
+
+# Dataset
+/archive/
+
+# File compilati Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# File temporanei
+*.log
+*.tmp
+*.bak
+
+# File sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
