@@ -1,0 +1,17 @@
+Split: Train=140, Val=20, Test=40
+Best params from validation: {'C': 10, 'coef0': 0.1, 'gamma': 'scale', 'kernel': 'sigmoid'}
+Final Test Accuracy: 0.8750
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.89      0.85      0.87        20
+           1       0.86      0.90      0.88        20
+
+    accuracy                           0.88        40
+   macro avg       0.88      0.88      0.87        40
+weighted avg       0.88      0.88      0.87        40
+
+Confusion Matrix:
+[[17  3]
+ [ 2 18]]
