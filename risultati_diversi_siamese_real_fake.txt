@@ -1,0 +1,180 @@
+(fvab) PS C:\Users\labor\Desktop\Progetto_FVAB-main-MD> & C:/Users/labor/anaconda3/envs/fvab/python.exe c:/Users/labor/Desktop/Progetto_FVAB-main-MD/train_artfact_siamese_vit_real_fake.py
+Calcolo embeddings ViT per il training...
+Estrazione embeddings train: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 63/63 [01:50<00:00,  1.76s/it]
+Calcolo embeddings ViT per la validation...
+Estrazione embeddings val: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:13<00:00,  1.74s/it]
+Inizio training rete siamese con validazione...
+
+──────────────────────────────────────────────────
+▶ Epoch 1 / 15 completata
+  ➤ Training Loss medio: 0.1129
+  ➤ Validation Triplet Loss: 0.1578
+  ➤ Validation Metrics:
+     - Accuracy: 0.7305
+     - Precision (macro): 0.6856
+     - Recall (macro): 0.7305
+     - F1-score (macro): 0.6729
+✅ Miglior F1-score aggiornato! Modello salvato (F1: 0.6729)
+⭐ Miglior validation loss aggiornata! Modello salvato (Loss: 0.1578)
+──────────────────────────────────────────────────
+
+──────────────────────────────────────────────────
+▶ Epoch 2 / 15 completata
+  ➤ Training Loss medio: 0.0288
+  ➤ Validation Triplet Loss: 0.1708
+  ➤ Validation Metrics:
+     - Accuracy: 0.7322
+     - Precision (macro): 0.7014
+     - Recall (macro): 0.7323
+     - F1-score (macro): 0.6812
+✅ Miglior F1-score aggiornato! Modello salvato (F1: 0.6812)
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 3 / 15 completata
+  ➤ Training Loss medio: 0.0181
+  ➤ Validation Triplet Loss: 0.1712
+  ➤ Validation Metrics:
+     - Accuracy: 0.7348
+     - Precision (macro): 0.7176
+     - Recall (macro): 0.7348
+     - F1-score (macro): 0.6937
+✅ Miglior F1-score aggiornato! Modello salvato (F1: 0.6937)
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 4 / 15 completata
+  ➤ Training Loss medio: 0.0125
+  ➤ Validation Triplet Loss: 0.1512
+  ➤ Validation Metrics:
+     - Accuracy: 0.7208
+     - Precision (macro): 0.6927
+     - Recall (macro): 0.7208
+     - F1-score (macro): 0.6817
+⭐ Miglior validation loss aggiornata! Modello salvato (Loss: 0.1512)
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 5 / 15 completata
+  ➤ Training Loss medio: 0.0092
+  ➤ Validation Triplet Loss: 0.1776
+  ➤ Validation Metrics:
+     - Accuracy: 0.7192
+     - Precision (macro): 0.6789
+     - Recall (macro): 0.7193
+     - F1-score (macro): 0.6727
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 6 / 15 completata
+  ➤ Training Loss medio: 0.0059
+  ➤ Validation Triplet Loss: 0.1882
+  ➤ Validation Metrics:
+     - Accuracy: 0.7262
+     - Precision (macro): 0.7037
+     - Recall (macro): 0.7263
+     - F1-score (macro): 0.6885
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 7 / 15 completata
+  ➤ Training Loss medio: 0.0042
+  ➤ Validation Triplet Loss: 0.1695
+  ➤ Validation Metrics:
+     - Accuracy: 0.7205
+     - Precision (macro): 0.6861
+     - Recall (macro): 0.7205
+     - F1-score (macro): 0.6771
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 8 / 15 completata
+  ➤ Training Loss medio: 0.0027
+  ➤ Validation Triplet Loss: 0.1882
+  ➤ Validation Metrics:
+     - Accuracy: 0.7340
+     - Precision (macro): 0.7177
+     - Recall (macro): 0.7340
+     - F1-score (macro): 0.6960
+✅ Miglior F1-score aggiornato! Modello salvato (F1: 0.6960)
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 9 / 15 completata
+  ➤ Training Loss medio: 0.0017
+  ➤ Validation Triplet Loss: 0.1910
+  ➤ Validation Metrics:
+     - Accuracy: 0.7262
+     - Precision (macro): 0.7008
+     - Recall (macro): 0.7263
+     - F1-score (macro): 0.6857
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 10 / 15 completata
+  ➤ Training Loss medio: 0.0015
+  ➤ Validation Triplet Loss: 0.1896
+  ➤ Validation Metrics:
+     - Accuracy: 0.7298
+     - Precision (macro): 0.7085
+     - Recall (macro): 0.7298
+     - F1-score (macro): 0.6903
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 11 / 15 completata
+  ➤ Training Loss medio: 0.0014
+  ➤ Validation Triplet Loss: 0.1788
+  ➤ Validation Metrics:
+     - Accuracy: 0.7245
+     - Precision (macro): 0.7053
+     - Recall (macro): 0.7245
+     - F1-score (macro): 0.6916
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 12 / 15 completata
+  ➤ Training Loss medio: 0.0009
+  ➤ Validation Triplet Loss: 0.1782
+  ➤ Validation Metrics:
+     - Accuracy: 0.7147
+     - Precision (macro): 0.6851
+     - Recall (macro): 0.7147
+     - F1-score (macro): 0.6780
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 13 / 15 completata
+  ➤ Training Loss medio: 0.0008
+  ➤ Validation Triplet Loss: 0.1845
+  ➤ Validation Metrics:
+     - Accuracy: 0.7228
+     - Precision (macro): 0.6987
+     - Recall (macro): 0.7228
+     - F1-score (macro): 0.6861
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 14 / 15 completata
+  ➤ Training Loss medio: 0.0013
+  ➤ Validation Triplet Loss: 0.1997
+  ➤ Validation Metrics:
+     - Accuracy: 0.7350
+     - Precision (macro): 0.7245
+     - Recall (macro): 0.7350
+     - F1-score (macro): 0.7049
+✅ Miglior F1-score aggiornato! Modello salvato (F1: 0.7049)
+──────────────────────────────────────────────────
+                                                                                                                                                                                                                                                                                
+──────────────────────────────────────────────────
+▶ Epoch 15 / 15 completata
+  ➤ Training Loss medio: 0.0007
+  ➤ Validation Triplet Loss: 0.1952
+  ➤ Validation Metrics:
+     - Accuracy: 0.7298
+     - Precision (macro): 0.7124
+     - Recall (macro): 0.7298
+     - F1-score (macro): 0.6947
+──────────────────────────────────────────────────
+Embeddings e labels trasformati salvati.
+
