@@ -1,0 +1,21 @@
+Split: Train=22400, Val=2800, Test=2800
+Best params from validation: {'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}
+Final Test Accuracy: 0.8332
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.76      0.74      0.75       700
+           1       0.89      0.86      0.88       700
+           2       0.84      0.88      0.86       700
+           3       0.84      0.85      0.84       700
+
+    accuracy                           0.83      2800
+   macro avg       0.83      0.83      0.83      2800
+weighted avg       0.83      0.83      0.83      2800
+
+Confusion Matrix:
+[[515  45  68  72]
+ [ 61 605  22  12]
+ [ 31  18 619  32]
+ [ 68  10  28 594]]
