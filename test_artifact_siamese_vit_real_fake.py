@@ -16,14 +16,22 @@ from tqdm import tqdm
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 import umap
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
 from scipy.spatial.distance import cdist
 from colorama import Fore, Style
+import seaborn as sns
 
 # Parametri
 image_size = 224
 batch_size = 512
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+# PATH aggiornati
+root_dir = r"C:\Users\labor\Desktop\Progetto_FVAB-main-MD\RisultatiSiameseDissimili"
+results_subdir = os.path.join(root_dir, "Risultati")
+graphs_dir = os.path.join(root_dir, "Grafici")
+os.makedirs(results_subdir, exist_ok=True)
+os.makedirs(graphs_dir, exist_ok=True)
 
 # Cartelle per ciascuna classe (4 classi)
 real_dirs = [r"C:\Users\labor\Desktop\Progetto_FVAB-main-MD\archive\imagenet\test1000"]
@@ -73,10 +81,6 @@ class EmbeddingNetwork(torch.nn.Module):
     def forward(self, x):
         return self.fc(x)
 
-# Cartella per i risultati
-save_dir = "RisultatiSiameseDiversi"
-os.makedirs(save_dir, exist_ok=True)
-
 # Caricamento dataset di test con 4 classi
 dataset_imagenet = ArtifactDataset(real_dirs, label=0, transform=transform)
 dataset_stylegan2 = ArtifactDataset(fake_dirs_stylegan2, label=1, transform=transform)
@@ -93,7 +97,7 @@ vit_model.eval()
 
 print(f"{Fore.CYAN}Caricamento modello siamese addestrato...{Style.RESET_ALL}")
 siamese_model = EmbeddingNetwork().to(device)
-siamese_model.load_state_dict(torch.load("best_model_val_loss.pt"))
+siamese_model.load_state_dict(torch.load(os.path.join(results_subdir, "best_model_val_loss.pt")))
 siamese_model.eval()
 
 # Estrazione embeddings di test
@@ -114,8 +118,8 @@ labels_test = torch.cat(labels_test).numpy()
 
 # Caricamento embeddings di training
 print(f"{Fore.CYAN}Caricamento embeddings di training...{Style.RESET_ALL}")
-embeddings_train = torch.load("embeddings_siamese.pt").numpy()
-labels_train = torch.load("labels.pt").numpy()
+embeddings_train = torch.load(os.path.join(results_subdir, "embeddings_siamese.pt")).numpy()
+labels_train = torch.load(os.path.join(results_subdir, "labels.pt")).numpy()
 
 # Calcolo predizioni multi-classe (4 classi)
 k = 5
@@ -151,55 +155,93 @@ print(f"{Fore.GREEN}Recall (macro): {recall:.4f}{Style.RESET_ALL}")
 print(f"{Fore.GREEN}F1-score (macro): {f1:.4f}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}Testing multi-classe completato con pesi combinati e k-neighbors amplificati!{Style.RESET_ALL}")
 
+# ===== MATRICE DI CONFUSIONE e REPORT =====
+class_labels = ['Imagenet (real)', 'StyleGAN2', 'Taming Transformer', 'SFHQ']
+cf = confusion_matrix(labels_test, predictions)
+report = classification_report(labels_test, predictions, target_names=class_labels)
+
+# Salvataggio report e metriche
+with open(os.path.join(results_subdir, "log_metrics.txt"), "w") as f:
+    f.write(f"Accuracy top-1: {accuracy_top1:.4f}\n")
+    f.write(f"Precision (macro): {precision:.4f}\n")
+    f.write(f"Recall (macro): {recall:.4f}\n")
+    f.write(f"F1-score (macro): {f1:.4f}\n\n")
+    f.write("Classification Report:\n")
+    f.write(report)
+    f.write("\nConfusion Matrix:\n")
+    f.write(str(cf))
+
+def plot_confusion_matrix(cf, class_labels, save_path=None):
+    group_counts = ["{0:0.0f}".format(value) for value in cf.flatten()]
+    group_percentages = ["{0:.2%}".format(value) for value in cf.flatten() / np.sum(cf)]
+    labels = [f"{count}\n({percent})" for count, percent in zip(group_counts, group_percentages)]
+    labels = np.asarray(labels).reshape(cf.shape)
+
+    plt.figure(figsize=(7, 6))
+    sns.set(style="whitegrid")
+    ax = sns.heatmap(cf, annot=labels, fmt='', cmap='Blues', cbar=False,
+                     xticklabels=class_labels, yticklabels=class_labels)
+    ax.set_title("Matrice di Confusione")
+    ax.set_xlabel("Classe Predetta")
+    ax.set_ylabel("Classe Reale")
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, dpi=300)
+    plt.close()
+
+plot_confusion_matrix(cf, class_labels, os.path.join(graphs_dir, "confusion_matrix.png"))
+print(f"{Fore.GREEN}Matrice di confusione salvata in: {graphs_dir}{Style.RESET_ALL}")
+
 # Funzioni di visualizzazione aggiornate per 4 classi
 def plot_2d(embeddings_2d, labels, technique):
-    filename = os.path.join(save_dir, f"artifact_siamese_{technique}_test_2d.png")
+    filename = os.path.join(graphs_dir, f"artifact_siamese_{technique}_test_2d.png")
     plt.figure(figsize=(10, 8))
-    colors = ['blue', 'orange', 'green', 'red']
-    labels_names = ['Imagenet (real)', 'StyleGAN2', 'Taming Transformer', 'SFHQ']
-    for i, (color, name) in enumerate(zip(colors, labels_names)):
-        plt.scatter(embeddings_2d[labels == i, 0], embeddings_2d[labels == i, 1], c=color, label=name, alpha=0.6, s=10)
-    plt.legend()
-    plt.title(f"{technique.upper()} 2D Test Embeddings")
-    plt.savefig(filename)
+    palette = ['#0072B2', '#D55E00', '#009E73', '#CC79A7']  # 4 colori distinti
+    scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap=matplotlib.colors.ListedColormap(palette), s=6, alpha=0.8)
+    plt.title(f"Visualizzazione {technique} 2D")
+    plt.legend(handles=scatter.legend_elements()[0], labels=class_labels)
+    plt.savefig(filename, dpi=300)
     plt.close()
-    print(f"{Fore.GREEN}Salvato: {filename}{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}Grafico 2D {technique} salvato in {filename}{Style.RESET_ALL}")
 
 def plot_3d(embeddings_3d, labels, technique):
-    filename = os.path.join(save_dir, f"artifact_siamese_{technique}_test_3d.png")
+    from mpl_toolkits.mplot3d import Axes3D
+    filename = os.path.join(graphs_dir, f"artifact_siamese_{technique}_test_3d.png")
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
-    colors = ['blue', 'orange', 'green', 'red']
-    labels_names = ['Imagenet (real)', 'StyleGAN2', 'Taming Transformer', 'SFHQ']
-    for i, (color, name) in enumerate(zip(colors, labels_names)):
-        ax.scatter(embeddings_3d[labels == i, 0], embeddings_3d[labels == i, 1], embeddings_3d[labels == i, 2], c=color, label=name, alpha=0.6, s=10)
-    ax.legend()
-    ax.set_title(f"{technique.upper()} 3D Test Embeddings")
-    plt.savefig(filename)
+    palette = ['#0072B2', '#D55E00', '#009E73', '#CC79A7']
+    scatter = ax.scatter(embeddings_3d[:, 0], embeddings_3d[:, 1], embeddings_3d[:, 2], c=labels, cmap=matplotlib.colors.ListedColormap(palette), s=6, alpha=0.8)
+    ax.set_title(f"Visualizzazione {technique} 3D")
+    ax.legend(handles=scatter.legend_elements()[0], labels=class_labels)
+    plt.savefig(filename, dpi=300)
     plt.close()
-    print(f"{Fore.GREEN}Salvato: {filename}{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}Grafico 3D {technique} salvato in {filename}{Style.RESET_ALL}")
 
-print(f"{Fore.CYAN}Calcolo e salvataggio visualizzazioni 2D e 3D multi-classe...{Style.RESET_ALL}")
+# Visualizzazione 2D e 3D con TSNE, PCA e UMAP
+print(f"{Fore.CYAN}Calcolo visualizzazioni 2D e 3D con TSNE, PCA e UMAP...{Style.RESET_ALL}")
 
-# t-SNE
-tsne_2d = TSNE(n_components=2, random_state=42).fit_transform(embeddings_test)
-plot_2d(tsne_2d, labels_test, "tsne")
+# TSNE 2D e 3D
+tsne_2d = TSNE(n_components=2, random_state=42)
+tsne_emb_2d = tsne_2d.fit_transform(embeddings_test)
+plot_2d(tsne_emb_2d, labels_test, "tsne")
 
-tsne_3d = TSNE(n_components=3, random_state=42).fit_transform(embeddings_test)
-plot_3d(tsne_3d, labels_test, "tsne")
+tsne_3d = TSNE(n_components=3, random_state=42)
+tsne_emb_3d = tsne_3d.fit_transform(embeddings_test)
+plot_3d(tsne_emb_3d, labels_test, "tsne")
 
-# PCA
-pca_2d = PCA(n_components=2).fit_transform(embeddings_test)
-plot_2d(pca_2d, labels_test, "pca")
+# PCA 2D e 3D
+pca = PCA(n_components=3)
+pca_emb = pca.fit_transform(embeddings_test)
+plot_2d(pca_emb[:, :2], labels_test, "pca")
+plot_3d(pca_emb, labels_test, "pca")
 
-pca_3d = PCA(n_components=3).fit_transform(embeddings_test)
-plot_3d(pca_3d, labels_test, "pca")
+# UMAP 2D e 3D
+umap_2d = umap.UMAP(n_components=2, random_state=42)
+umap_emb_2d = umap_2d.fit_transform(embeddings_test)
+plot_2d(umap_emb_2d, labels_test, "umap")
 
-# UMAP
-umap_2d = umap.UMAP(n_components=2, random_state=42).fit_transform(embeddings_test)
-plot_2d(umap_2d, labels_test, "umap")
+umap_3d = umap.UMAP(n_components=3, random_state=42)
+umap_emb_3d = umap_3d.fit_transform(embeddings_test)
+plot_3d(umap_emb_3d, labels_test, "umap")
 
-umap_3d = umap.UMAP(n_components=3, random_state=42).fit_transform(embeddings_test)
-plot_3d(umap_3d, labels_test, "umap")
-
-print(f"{Fore.GREEN}Tutte le visualizzazioni 2D e 3D multi-classe sono state salvate con i nomi corretti!{Style.RESET_ALL}")
+print(f"{Fore.GREEN}Visualizzazioni 2D e 3D completate!{Style.RESET_ALL}")

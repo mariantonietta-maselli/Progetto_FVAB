@@ -1,0 +1,22 @@
+Accuracy: 0.6494
+Precision (macro): 0.5955
+Recall (macro): 0.6088
+F1-score (macro): 0.5702
+
+Classification Report:
+                       precision    recall  f1-score   support
+
+Generative Inpainting       0.67      0.81      0.73      2000
+     Latent Diffusion       0.65      0.84      0.73      1000
+               GauGAN       0.66      0.70      0.68      1000
+               ProGAN       0.41      0.08      0.14      1000
+
+             accuracy                           0.65      5000
+            macro avg       0.60      0.61      0.57      5000
+         weighted avg       0.61      0.65      0.60      5000
+
+Confusion Matrix:
+[[1624  190  122   64]
+ [ 132  842    7   19]
+ [ 251   13  698   38]
+ [ 434  259  224   83]]

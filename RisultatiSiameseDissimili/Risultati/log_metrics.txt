@@ -1,0 +1,22 @@
+Accuracy top-1: 0.7525
+Precision (macro): 0.7580
+Recall (macro): 0.7525
+F1-score (macro): 0.7067
+
+Classification Report:
+                    precision    recall  f1-score   support
+
+   Imagenet (real)       0.53      0.11      0.18      1000
+         StyleGAN2       1.00      1.00      1.00      1000
+Taming Transformer       0.50      0.90      0.65      1000
+              SFHQ       1.00      1.00      1.00      1000
+
+          accuracy                           0.75      4000
+         macro avg       0.76      0.75      0.71      4000
+      weighted avg       0.76      0.75      0.71      4000
+
+Confusion Matrix:
+[[110   0 890   0]
+ [  1 999   0   0]
+ [ 97   0 903   0]
+ [  0   0   2 998]]

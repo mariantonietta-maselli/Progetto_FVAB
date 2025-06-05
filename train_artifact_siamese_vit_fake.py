@@ -137,8 +137,12 @@ class TripletDataset(Dataset):
 def train_siamese_network(embeddings_train, labels_train, paths_train, embeddings_val, labels_val, paths_val, epochs=15, lr=1e-4):
     triplet_dataset = TripletDataset(embeddings_train, labels_train, paths_train)
     triplet_loader = DataLoader(triplet_dataset, batch_size=64, shuffle=True)
-    
-    triplet_dataset.save_triplets_to_csv(r"C:\Users\labor\Desktop\Progetto_FVAB-main-MD\triplets.csv")
+
+    # Nuova cartella output per salvataggi
+    output_dir = r"C:\Users\labor\Desktop\Progetto_FVAB-main-MD\RisultatiSiameseSimili\Risultati"
+    os.makedirs(output_dir, exist_ok=True)
+
+    triplet_dataset.save_triplets_to_csv(os.path.join(output_dir, "triplets.csv"))
 
     model = EmbeddingNetwork().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -169,7 +173,7 @@ def train_siamese_network(embeddings_train, labels_train, paths_train, embedding
 
         with torch.no_grad():
             embeddings_siamese_train = model(embeddings_train.to(device)).cpu()
-        torch.save(embeddings_siamese_train, "embeddings_siamese_train.pt")
+        torch.save(embeddings_siamese_train, os.path.join(output_dir, "embeddings_siamese_train.pt"))
 
         model.eval()
         with torch.no_grad():
@@ -187,9 +191,9 @@ def train_siamese_network(embeddings_train, labels_train, paths_train, embedding
             val_loss = total_val_loss / len(val_triplet_loader)
 
             embeddings_val_np = model(embeddings_val.to(device)).cpu().numpy()
-            embeddings_siamese_train = torch.load("embeddings_siamese_train.pt").numpy()
+            embeddings_siamese_train_np = torch.load(os.path.join(output_dir, "embeddings_siamese_train.pt")).numpy()
 
-            dists = cdist(embeddings_val_np, embeddings_siamese_train)
+            dists = cdist(embeddings_val_np, embeddings_siamese_train_np)
             predictions = []
             k, alpha, beta = 5, 0.5, 3
             for i in range(len(embeddings_val_np)):
@@ -225,20 +229,20 @@ def train_siamese_network(embeddings_train, labels_train, paths_train, embedding
 
         if f1 > best_f1:
             best_f1 = f1
-            torch.save(model.state_dict(), "best_model_f1.pt")
+            torch.save(model.state_dict(), os.path.join(output_dir, "best_model_f1.pt"))
             print(f"{Fore.GREEN}✅ Miglior F1-score aggiornato! Modello salvato (F1: {f1:.4f}){Style.RESET_ALL}")
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), "best_model_val_loss.pt")
+            torch.save(model.state_dict(), os.path.join(output_dir, "best_model_val_loss.pt"))
             print(f"{Fore.YELLOW}⭐ Miglior validation loss aggiornata! Modello salvato (Loss: {val_loss:.4f}){Style.RESET_ALL}")
 
         print("─" * 50)
 
     with torch.no_grad():
         final_embeddings = model(embeddings_train.to(device)).cpu()
-    torch.save(final_embeddings, "embeddings_siamese.pt")
-    torch.save(labels_train, "labels.pt")
+    torch.save(final_embeddings, os.path.join(output_dir, "embeddings_siamese.pt"))
+    torch.save(labels_train, os.path.join(output_dir, "labels.pt"))
     print(f"{Fore.GREEN}Embeddings e labels trasformati salvati.{Style.RESET_ALL}")
     return model
 
