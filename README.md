@@ -28,6 +28,3 @@ Questo repository contiene il codice e le istruzioni necessarie per eseguire il 
 ```bash
 conda env create -f environment.yml
 ```
-
-## Documentazione
-Link alla documentazione ufficiale del progetto: TO ADD
